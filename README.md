@@ -12,6 +12,7 @@ At least I can say, it's dead easy.
 
     # install scripts
     git clone https://github.com/bebehei/backup-with-borg
+    cd backup-with-borg
     make install
     cp /etc/backup/{example,default}.env
 
