@@ -1,0 +1,37 @@
+#!/bin/bash
+
+die(){ echo "$*" >&2; exit 1; }
+
+BACKUP_CONF="${BACKUP_CONF:-default}"
+
+if [ -r "~/.config/backup/${BACKUP_CONF}.env" ]; then
+	. "~/.config/backup/${BACKUP_CONF}.env" || die "Could not read envfile."
+elif [ -r "/etc/backup/${BACKUP_CONF}.env" ]; then
+	. "/etc/backup/${BACKUP_CONF}.env" || die "Could not read envfile."
+else
+	die "Configuration '${BACKUP_CONF}' does not exist."
+fi
+
+case "$1" in
+	run)
+		borg create \
+			-x \
+			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%d_%H:%M}' \
+			${EXCLUDE_FILE:+--exclude-from=${EXCLUDE_FILE}} \
+			${SOURCES[@]:-/} \
+		|| die "borg failed to create archive."
+		
+		borg prune \
+			--list -v \
+			--prefix='{hostname}'${SUFFIX} \
+			${KEEP_WITHIN:+--keep-within=${KEEP_WITHIN}} \
+			${KEEP_DAILY:+--keep-daily=${KEEP_DAILY}} \
+			${KEEP_WEEKLY:+--keep-weekly=${KEEP_WEEKLY}} \
+			${KEEP_MONTHLY:+--keep-monthly=${KEEP_MONTHLY}} \
+			${KEEP_YEARLY:+--keep-yearly=${KEEP_YEARLY}} \
+		|| die "borg failed to prune archives"
+		;;
+	*)
+		borg $*
+		;;
+esac
