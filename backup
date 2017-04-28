@@ -19,13 +19,14 @@ case "$1" in
 	run|"")
 		borg create \
 			-x \
+			${OPT_BORG} ${OPT_BORG_CREATE} \
 			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%d_%H:%M}' \
 			${EXCLUDE_FILE:+--exclude-from=${EXCLUDE_FILE}} \
 			${SOURCES[@]:-/} \
 		|| die "borg failed to create archive."
 		
 		borg prune \
-			--list -v \
+			${OPT_BORG} ${OPT_BORG_PRUNE} \
 			--prefix='{hostname}'${SUFFIX} \
 			${KEEP_WITHIN:+--keep-within=${KEEP_WITHIN}} \
 			${KEEP_DAILY:+--keep-daily=${KEEP_DAILY}} \
@@ -35,6 +36,6 @@ case "$1" in
 		|| die "borg failed to prune archives"
 		;;
 	*)
-		borg $*
+		borg ${OPT_BORG} $*
 		;;
 esac
