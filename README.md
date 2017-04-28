@@ -10,6 +10,8 @@ At least I can say, it's dead easy.
 
 ## Installation
 
+You need to have [borgbackup](https://github.com/borgbackup/borg/) prior to your first run. See [borg's installations instructions](https://borgbackup.readthedocs.io/en/stable/installation.html) for details.
+
     # install scripts
     git clone https://github.com/bebehei/backup-with-borg
     cd backup-with-borg
