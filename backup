@@ -8,12 +8,18 @@ command -v borg &>/dev/null \
 BACKUP_CONF="${BACKUP_CONF:-default}"
 
 if [ -r "$HOME/.config/backup/${BACKUP_CONF}.env" ]; then
-	. "$HOME/.config/backup/${BACKUP_CONF}.env" || die "Could not read envfile."
+	CONFIG_BASE="$HOME/.config/backup"
 elif [ -r "/etc/backup/${BACKUP_CONF}.env" ]; then
-	. "/etc/backup/${BACKUP_CONF}.env" || die "Could not read envfile."
+	CONFIG_BASE="/etc/backup"
 else
 	die "Configuration '${BACKUP_CONF}' does not exist."
 fi
+
+if [ -e "${CONFIG_BASE}/${BACKUP_CONF}.exclude" ]; then
+	EXCLUDE_FILE="${CONFIG_BASE}/${BACKUP_CONF}.exclude"
+else
+
+. "${CONFIG_BASE}/${BACKUP_CONF}.env" || die "Could not read envfile."
 
 case "$1" in
 	run|"")
