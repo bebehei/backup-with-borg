@@ -7,6 +7,8 @@ command -v borg &>/dev/null \
 
 BACKUP_CONF="${BACKUP_CONF:-default}"
 
+expand_excludes(){for i in $*; do echo --exclude=$i; done;}
+
 if [ -r "$HOME/.config/backup/${BACKUP_CONF}.env" ]; then
 	. "$HOME/.config/backup/${BACKUP_CONF}.env" || die "Could not read envfile."
 elif [ -r "/etc/backup/${BACKUP_CONF}.env" ]; then
@@ -22,6 +24,7 @@ case "$1" in
 			${OPT_BORG} ${OPT_BORG_CREATE} \
 			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%d_%H:%M}' \
 			${EXCLUDE_FILE:+--exclude-from=${EXCLUDE_FILE}} \
+			${EXCLUDE:+$(expand_excludes ${EXCLUDE[@]})} \
 			${SOURCES[@]:-/} \
 		|| die "borg failed to create archive."
 		
