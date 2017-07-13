@@ -17,7 +17,7 @@ fi
 
 if [ -e "${CONFIG_BASE}/${BACKUP_CONF}.exclude" ]; then
 	EXCLUDE_FILE="${CONFIG_BASE}/${BACKUP_CONF}.exclude"
-else
+fi
 
 . "${CONFIG_BASE}/${BACKUP_CONF}.env" || die "Could not read envfile."
 
