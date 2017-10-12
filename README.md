@@ -22,7 +22,7 @@ You need to have [borgbackup](https://github.com/borgbackup/borg/) prior to your
     $EDITOR /etc/backup/default.env
 
     # initialize everything
-    backup init
+    backup init --encryption=repokey
 
     # add cronjob (for hourly backup)
     { crontab -l ; echo "0 * * * * backup"; } | crontab -
