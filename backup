@@ -26,8 +26,8 @@ case "$1" in
 		borg create \
 			-x \
 			${OPT_BORG} ${OPT_BORG_CREATE} \
-			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%d_%H:%M}' \
 			${EXCLUDE_FILE:+--exclude-from=${EXCLUDE_FILE}} \
+			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%d_%H:%M}' \
 			${SOURCES[@]:-/} \
 		|| die "borg failed to create archive."
 		
