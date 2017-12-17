@@ -23,14 +23,6 @@ fi
 
 case "$1" in
 	run|"")
-		borg create \
-			-x \
-			${OPT_BORG} ${OPT_BORG_CREATE} \
-			${EXCLUDE_FILE:+--exclude-from=${EXCLUDE_FILE}} \
-			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%d_%H:%M}' \
-			${SOURCES[@]:-/} \
-		|| die "borg failed to create archive."
-		
 		borg prune \
 			${OPT_BORG} ${OPT_BORG_PRUNE} \
 			--prefix='{hostname}'${SUFFIX} \
@@ -40,6 +32,14 @@ case "$1" in
 			${KEEP_MONTHLY:+--keep-monthly=${KEEP_MONTHLY}} \
 			${KEEP_YEARLY:+--keep-yearly=${KEEP_YEARLY}} \
 		|| die "borg failed to prune archives"
+
+		borg create \
+			-x \
+			${OPT_BORG} ${OPT_BORG_CREATE} \
+			${EXCLUDE_FILE:+--exclude-from=${EXCLUDE_FILE}} \
+			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%d_%H:%M}' \
+			${SOURCES[@]:-/} \
+		|| die "borg failed to create archive."
 		;;
 	*)
 		borg ${OPT_BORG} $*
