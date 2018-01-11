@@ -4,9 +4,28 @@ Backup tool to create easily archives with borgbackup.
 
 ## Usage
 
-I'm too tired now. Maybe tomorrow.
+```
+backup do-create
+```
 
-At least I can say, it's dead easy.
+Create a new archive with your current configuration.
+
+```
+backup do-prune
+```
+
+Prune your archives according to `KEEP_*` variables in the configuration file.
+
+```
+backup (do)
+backup
+```
+
+Create a new archive and then prune the repository archives. (Wraps `do-create` and `do-prune`)
+
+### Wrapper
+
+You also can use native `borg` commands like `list` or mount. These will respect the exported `BORG_*` variables. So a plain `backup list` will list all of your current archives in the configured repository.
 
 ## Installation
 
