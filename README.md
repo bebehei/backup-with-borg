@@ -1,6 +1,6 @@
 # backup-with-borg
 
-Backup tool to create easily encrypted archives with borgbackup.
+Backup tool to create easily archives with borgbackup.
 
 ## Usage
 
