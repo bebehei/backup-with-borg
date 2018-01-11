@@ -42,7 +42,8 @@ case "$1" in
 			${KEEP_DAILY:+--keep-daily=${KEEP_DAILY}} \
 			${KEEP_WEEKLY:+--keep-weekly=${KEEP_WEEKLY}} \
 			${KEEP_MONTHLY:+--keep-monthly=${KEEP_MONTHLY}} \
-			${KEEP_YEARLY:+--keep-yearly=${KEEP_YEARLY}}
+			${KEEP_YEARLY:+--keep-yearly=${KEEP_YEARLY}} \
+			${KEEP_LAST:+--keep-last=${KEEP_LAST}}
 		;;
 
 	run|"")
