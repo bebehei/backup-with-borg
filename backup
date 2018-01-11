@@ -2,6 +2,8 @@
 
 die(){ echo "$*" >&2; exit 1; }
 
+BACKUP="$0"
+
 command -v borg &>/dev/null \
 	|| die 'Cannot find borg executable!'
 
@@ -22,15 +24,17 @@ fi
 . "${CONFIG_BASE}/${BACKUP_CONF}.env" || die "Could not read envfile."
 
 case "$1" in
-	run|"")
+
+	do-create)
 		borg create \
 			-x \
 			${OPT_BORG} ${OPT_BORG_CREATE} \
 			${EXCLUDE_FILE:+--exclude-from=${EXCLUDE_FILE}} \
 			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%d_%H:%M}' \
-			${SOURCES[@]:-/} \
-		|| die "borg failed to create archive."
-		
+			${SOURCES[@]:-/}
+		;;
+
+	do-prune)
 		borg prune \
 			${OPT_BORG} ${OPT_BORG_PRUNE} \
 			--prefix='{hostname}'${SUFFIX} \
@@ -38,7 +42,13 @@ case "$1" in
 			${KEEP_DAILY:+--keep-daily=${KEEP_DAILY}} \
 			${KEEP_WEEKLY:+--keep-weekly=${KEEP_WEEKLY}} \
 			${KEEP_MONTHLY:+--keep-monthly=${KEEP_MONTHLY}} \
-			${KEEP_YEARLY:+--keep-yearly=${KEEP_YEARLY}} \
+			${KEEP_YEARLY:+--keep-yearly=${KEEP_YEARLY}}
+		;;
+
+	run|"")
+		"${BACKUP}" do-create \
+		|| die "borg failed to create archive."
+		"${BACKUP}" do-prune \
 		|| die "borg failed to prune archives"
 		;;
 	*)
