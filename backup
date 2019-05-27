@@ -1,4 +1,5 @@
 #!/bin/bash
+export PATH=$PATH:/usr/local/bin
 
 die(){ echo "$*" >&2; exit 1; }
 
@@ -30,7 +31,8 @@ case "$1" in
 			-x \
 			${OPT_BORG} ${OPT_BORG_CREATE} \
 			${EXCLUDE_FILE:+--exclude-from=${EXCLUDE_FILE}} \
-			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%d_%H:%M}' \
+			--exclude-if-present .nobackup \
+			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%dT%H:%M:%S}' \
 			${SOURCES[@]:-/}
 		;;
 
@@ -39,6 +41,7 @@ case "$1" in
 			${OPT_BORG} ${OPT_BORG_PRUNE} \
 			--prefix='{hostname}'${SUFFIX} \
 			${KEEP_WITHIN:+--keep-within=${KEEP_WITHIN}} \
+			${KEEP_HOURLY:+--keep-hourly=${KEEP_HOURLY}} \
 			${KEEP_DAILY:+--keep-daily=${KEEP_DAILY}} \
 			${KEEP_WEEKLY:+--keep-weekly=${KEEP_WEEKLY}} \
 			${KEEP_MONTHLY:+--keep-monthly=${KEEP_MONTHLY}} \

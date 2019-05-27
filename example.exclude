@@ -1,0 +1,3 @@
+# Sample exclude patterns
+**/.DS_Store
+**/.config
