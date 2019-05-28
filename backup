@@ -20,7 +20,9 @@ fi
 
 . "${CONFIG_BASE}/${BACKUP_CONF}.env" || die "Could not read envfile."
 
-command -v $CMD_BORG &>/dev/null \
+: "${CMD_BORG:=borg}"
+command -v "${CMD_BORG}" &>/dev/null \
+        || die "Cannot find '${CMD_BORG}' executable! Verify the CMD_BORG variable."
         || die 'Cannot find borg executable! Verify the CMD_BORG variable.'
 
 case "$1" in
