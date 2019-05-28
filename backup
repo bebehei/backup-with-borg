@@ -4,9 +4,6 @@ die(){ echo "$*" >&2; exit 1; }
 
 BACKUP="$0"
 
-command -v $CMD_BORG &>/dev/null \
-	|| die 'Cannot find borg executable! Verify the CMD_BORG variable.'
-
 BACKUP_CONF="${BACKUP_CONF:-default}"
 
 if [ -r "$HOME/.config/backup/${BACKUP_CONF}.env" ]; then
@@ -22,6 +19,9 @@ if [ -e "${CONFIG_BASE}/${BACKUP_CONF}.exclude" ]; then
 fi
 
 . "${CONFIG_BASE}/${BACKUP_CONF}.env" || die "Could not read envfile."
+
+command -v $CMD_BORG &>/dev/null \
+        || die 'Cannot find borg executable! Verify the CMD_BORG variable.'
 
 case "$1" in
 
