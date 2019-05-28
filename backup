@@ -1,12 +1,11 @@
 #!/bin/bash
-export PATH=$PATH:/usr/local/bin
 
 die(){ echo "$*" >&2; exit 1; }
 
 BACKUP="$0"
 
-command -v borg &>/dev/null \
-	|| die 'Cannot find borg executable!'
+command -v $CMD_BORG &>/dev/null \
+	|| die 'Cannot find borg executable! Verify the CMD_BORG variable.'
 
 BACKUP_CONF="${BACKUP_CONF:-default}"
 
@@ -27,7 +26,7 @@ fi
 case "$1" in
 
 	do-create)
-		borg create \
+		$CMD_BORG create \
 			-x \
 			${OPT_BORG} ${OPT_BORG_CREATE} \
 			${EXCLUDE_FILE:+--exclude-from=${EXCLUDE_FILE}} \
@@ -37,7 +36,7 @@ case "$1" in
 		;;
 
 	do-prune)
-		borg prune \
+		$CMD_BORG prune \
 			${OPT_BORG} ${OPT_BORG_PRUNE} \
 			--prefix='{hostname}'${SUFFIX} \
 			${KEEP_WITHIN:+--keep-within=${KEEP_WITHIN}} \
