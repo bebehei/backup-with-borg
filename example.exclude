@@ -1,3 +1,9 @@
 # Sample exclude patterns
+# More documentation can be found at https://borgbackup.readthedocs.io/en/stable/usage/help.html#borg-help-patterns
 **/.DS_Store
+*.Trash*
+**/.cache
 **/.config
+**/desktop.ini
+**/.gvfs
+**/.mozilla
