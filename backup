@@ -4,9 +4,6 @@ die(){ echo "$*" >&2; exit 1; }
 
 BACKUP="$0"
 
-command -v borg &>/dev/null \
-	|| die 'Cannot find borg executable!'
-
 BACKUP_CONF="${BACKUP_CONF:-default}"
 
 if [ -r "$HOME/.config/backup/${BACKUP_CONF}.env" ]; then
@@ -23,34 +20,48 @@ fi
 
 . "${CONFIG_BASE}/${BACKUP_CONF}.env" || die "Could not read envfile."
 
+: "${CMD_BORG:=borg}"
+command -v "${CMD_BORG}" &>/dev/null \
+        || die "Cannot find '${CMD_BORG}' executable! Verify the CMD_BORG variable."
+
 case "$1" in
 
 	do-create)
-		borg create \
+		$CMD_BORG create \
 			-x \
 			${OPT_BORG} ${OPT_BORG_CREATE} \
 			${EXCLUDE_FILE:+--exclude-from=${EXCLUDE_FILE}} \
-			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%d_%H:%M}' \
+			${OPT_BORG_EXCLUDE_CACHES} \
+			${OPT_BORG_EXCLUDE_IF_PRESENT} \
+			::'{hostname}'${SUFFIX}'-{now:%Y-%m-%dT%H:%M:%S}' \
 			${SOURCES[@]:-/}
 		;;
 
 	do-prune)
-		borg prune \
+		$CMD_BORG prune \
 			${OPT_BORG} ${OPT_BORG_PRUNE} \
-			--prefix='{hostname}'${SUFFIX} \
+			--glob-archives='{hostname}'${SUFFIX}'-*' \
 			${KEEP_WITHIN:+--keep-within=${KEEP_WITHIN}} \
+			${KEEP_HOURLY:+--keep-hourly=${KEEP_HOURLY}} \
 			${KEEP_DAILY:+--keep-daily=${KEEP_DAILY}} \
 			${KEEP_WEEKLY:+--keep-weekly=${KEEP_WEEKLY}} \
 			${KEEP_MONTHLY:+--keep-monthly=${KEEP_MONTHLY}} \
 			${KEEP_YEARLY:+--keep-yearly=${KEEP_YEARLY}} \
 			${KEEP_LAST:+--keep-last=${KEEP_LAST}}
 		;;
+	
+	do-compact)
+		$CMD_BORG compact \
+			${OPT_BORG} ${OPT_BORG_COMPACT}
+		;;
 
 	run|"")
 		"${BACKUP}" do-create \
 		|| die "borg failed to create archive."
 		"${BACKUP}" do-prune \
-		|| die "borg failed to prune archives"
+		|| die "borg failed to prune archives."
+		"${BACKUP}" do-compact \
+		|| die "borg failed to compact archives."
 		;;
 	*)
 		borg ${OPT_BORG} $*

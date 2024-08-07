@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+
+# Specify list of repositories, separated by spaces.  E.g.:
+# repolist=( default repo2 repo3 )
+repolist=( default )
+
+for repo in ${repolist[*]}; do
+    IFS=$'\n';
+    Z=(`BACKUP_CONF=$repo backup list`);
+    unset IFS;
+    LBU=`echo ${Z[-1]} | awk '{print $1}'`;
+    echo "";
+    echo "_______________________________________________________________________________";
+    echo "";
+    echo "BACKUP LIST FOR REPO: " $repo;
+    echo "";
+    for i ("$Z[@]") print -r -- $i;
+    echo "";
+    echo "_______________________________________________________________________________";
+    echo "";
+    echo "INFO FOR REPO: " $repo;
+    echo "";
+    BACKUP_CONF=$repo backup info 2>/dev/null | egrep "Repository|Location|Encrypted|Key|Cache|Security";
+    echo "_______________________________________________________________________________";
+    echo "";
+    echo "INFO FOR LAST BACKUP ($LBU): ";
+    echo "";
+    BACKUP_CONF=$repo backup info ::$LBU 2>/dev/null;
+done

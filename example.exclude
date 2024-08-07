@@ -1,0 +1,15 @@
+# Sample exclude patterns
+# More documentation can be found at https://borgbackup.readthedocs.io/en/stable/usage/help.html#borg-help-patterns
+# You likely will want to exclude virtual machine directories and cloud storage.
+
+**/.DS_Store
+*.Trash*
+**/.cache
+**/.config
+**/.gvfs
+**/.mozilla
+**/Library/CloudStorage
+**/VirtualBox\ VMs
+**/Virtual\ Machines.localized
+**/desktop.ini
+**/vmware
